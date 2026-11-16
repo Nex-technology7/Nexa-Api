@@ -6,7 +6,17 @@ const send=(res,status,data)=>{if(res.writableEnded)return;res.writeHead(status,
 const routes={
  '/api/v1/ai/chat':{params:{q:[1,2000]}},
  '/api/v1/ai/summarize':{params:{text:[50,10000]}},
- '/api/v1/ai/translate':{params:{q:[1,2000],to:[1,30],from:[0,30]}}
+ '/api/v1/ai/translate':{params:{q:[1,2000],to:[1,30],from:[0,30]}},
+ '/api/v1/ai/gpt':{params:{q:[1,2000]}},
+ '/api/v1/tools/define':{params:{word:[1,100]}},
+ '/api/v1/tools/urbandict':{params:{word:[1,100]}},
+ '/api/v1/tools/base64':{params:{text:[1,4000],mode:[0,10]}},
+ '/api/v1/tools/hash':{params:{text:[1,4000]}},
+ '/api/v1/tools/uuid':{params:{}},
+ '/api/v1/web/wiki':{params:{q:[1,200]}},
+ '/api/v1/web/qrcode':{params:{text:[1,2000]}},
+ '/api/v1/anime/search':{params:{q:[1,200]}},
+ '/api/v1/yt/search':{params:{q:[1,200]}}
 };
 async function provider(req,res,url,route){
  const target=new URL(url.pathname,'https://api.zukoxmd.my.id');

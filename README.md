@@ -1,6 +1,6 @@
 # Prism API prototype
 
-React/Vite API catalog and Node.js API, with local health and text-analysis endpoints and Zuko-powered chat, summarization and translation adapters. Provider availability and responses are not guaranteed.
+React/Vite API catalog and Node.js API, with local health and text-analysis endpoints and Zuko-powered adapters. Provider availability and responses are not guaranteed.
 
 ## Local development
 
@@ -13,8 +13,18 @@ Zuko documentation: https://api.zukoxmd.my.id/docs. If applicable, configure `ZU
 - GET `/api/v1/ai/chat?q=Hello`
 - GET `/api/v1/ai/summarize?text=...` (at least 50 characters)
 - GET `/api/v1/ai/translate?q=Hello&to=es` (optional `from`)
+- GET `/api/v1/ai/gpt?q=Hello`
+- GET `/api/v1/tools/define?word=hello`
+- GET `/api/v1/tools/urbandict?word=hello`
+- GET `/api/v1/tools/base64?text=hello&mode=encode` (mode optional: encode or decode)
+- GET `/api/v1/tools/hash?text=hello`
+- GET `/api/v1/tools/uuid`
+- GET `/api/v1/web/wiki?q=Earth`
+- GET `/api/v1/web/qrcode?text=hello`
+- GET `/api/v1/anime/search?q=Naruto`
+- GET `/api/v1/yt/search?q=music`
 
-URL-encode query values. Text is sent to Zuko and GET queries can be logged; do not submit sensitive data. Responses depend on the provider. The adapter applies a 20-second timeout and 1 MB response limit.
+URL-encode query values. Text is sent to Zuko and GET queries can be logged; do not submit sensitive data. Responses depend on the provider. The adapter applies a 20-second timeout and 1 MB response limit. The explorer and OpenAPI specification may not yet include all adapters.
 
 ## Deployment and security
 
