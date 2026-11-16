@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: prism-api-backend
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm run server
+    healthCheckPath: /api/v1/health
+
+  - type: web
+    name: prism-api-frontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://YOUR-BACKEND.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html

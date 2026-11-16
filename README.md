@@ -1,13 +1,24 @@
 # Prism API prototype
 
-A responsive React API catalog and interactive explorer with an original CSS-rendered 3D-style hero. Includes a Node.js API with health and text-analysis endpoints and an OpenAPI specification. Planned AI and media entries do not call providers.
+React/Vite API catalog and Node.js API. Includes local health and text-analysis endpoints and Zuko-powered chat, summarization and translation adapters. Provider availability and response format are not guaranteed.
 
-## Run locally
+## Local development
 
-Requires Node.js 18 or later and npm. In one terminal run `npm install` then `npm run server`. In another run `npm run dev` and open the Vite URL shown in the terminal. Vite proxies `/api` to port 3001. Run `npm test` for backend tests and `npm run build` to build the frontend.
+Requires Node.js 18 or later. Run `npm install`, then `npm run server` in one terminal and `npm run dev` in another. Run `npm test` and `npm run build` to check the project. The Vite development proxy forwards `/api` to port 3001; production requires a separate reverse proxy or rewrite.
 
-The Vite proxy is for development only. Production hosting requires a reverse proxy routing `/api` to the Node server and the remaining routes to the built frontend. `npm run preview` does not configure this proxy.
+## Provider configuration
 
-## Important limitations
+Zuko documentation: https://api.zukoxmd.my.id/docs . Its documentation states basic usage may not require a key. If you have a key, optionally configure `ZUKO_API_KEY` as a secret environment variable on the Render backend service, never in source control or the frontend. Provider policies, rate limits and availability can change.
 
-This is a prototype, not a production platform. Registration, authentication, API keys, rate limiting, quotas, user and admin dashboards, billing, provider integrations, job queues and video generation are not implemented. The two working endpoints are public and should not be exposed to the internet without security, abuse controls and operational review. No third-party provider or paid plan is configured. The hero uses CSS rather than WebGL. Fonts load from Google Fonts when available; system fonts are used otherwise.
+GET endpoints:
+- `/api/v1/ai/chat?q=Hello`
+- `/api/v1/ai/summarize?text=...` (at least 50 characters)
+- `/api/v1/ai/translate?q=Hello&to=es` (optional `from`)
+
+Query values must be URL encoded. Requests and text are sent to Zuko; do not send sensitive data. Because GET query strings may be stored in logs, browser history or monitoring systems, do not use these endpoints for confidential content. Provider response JSON passes through unchanged on success; the proxy returns generic errors on failure. A 20-second timeout and 1 MB response limit apply. Video generation is not implemented.
+
+## Deployment and security
+
+Commit the updated files and redeploy the Render backend and frontend. Keep the existing frontend `/api` routing pointed to your backend. Verify both services redeployed and test `/api/v1/health` and the AI endpoints. Set any optional secret only on the backend.
+
+This is a prototype: no user authentication, API keys, rate limits, quotas, billing or admin tools. Public users can consume your provider quota or cause costs. Add authentication, rate limits and abuse controls before public use; review provider terms, privacy and costs. No payment system is implemented. Fonts load from Google Fonts when available.
