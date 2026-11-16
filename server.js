@@ -1,0 +1,7 @@
+import http from 'node:http';
+import {readFile} from 'node:fs/promises';
+const port=Number(process.env.PORT||3001);
+const spec=JSON.parse(await readFile(new URL('./openapi.json',import.meta.url),'utf8'));
+const send=(res,status,data)=>{res.writeHead(status,{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'});res.end(JSON.stringify(data));};
+export function handler(req,res){const path=new URL(req.url,'http://localhost').pathname;if(req.method==='GET'&&path==='/api/v1/health')return send(res,200,{status:'ok',time:new Date().toISOString()});if(req.method==='GET'&&path==='/api/openapi.json')return send(res,200,spec);if(req.method==='POST'&&path==='/api/v1/utilities/text'){let data='',size=0;req.on('data',chunk=>{size+=chunk.length;if(size<=16384)data+=chunk;});req.on('end',()=>{if(size>16384)return send(res,413,{error:'Request too large'});try{const body=JSON.parse(data);if(typeof body.text!=='string'||body.text.length>10000)return send(res,400,{error:'text must be a string of at most 10000 characters'});const text=body.text.trim();const words=text?text.split(/\s+/u).length:0;send(res,200,{characters:[...body.text].length,words,readingTimeMinutes:Math.ceil(words/200)});}catch{send(res,400,{error:'Invalid JSON'});}});return;}send(res,404,{error:'Endpoint not found'});}
+if(process.argv[1]&&import.meta.url===new URL('file://'+process.argv[1]).href)http.createServer(handler).listen(port,()=>console.log(`API listening on port ${port}`));
